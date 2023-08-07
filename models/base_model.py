@@ -20,7 +20,7 @@ class BaseModel:
                 else:
                     self.__dict__[k] = v
         else:
-           storage.new(self)
+          storage.new(self)
 
     def __str__(self):
         return "[{}] ({}) {}".format(type(self).__name__, self.id, self.__dict__)

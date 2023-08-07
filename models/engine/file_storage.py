@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ module file_storage"""
 import json
+import models
 
 class FileStorage:
     """
@@ -14,7 +15,7 @@ class FileStorage:
     def new(self, obj):
         key = "{}.{}".format(obj.__class__.__name__, obj.id)
         self.__objects[key] = obj
-        
+    """    
     def save(self):
         serialized_objects = {key: obj.to_dict() for key, obj in self.__objects.items()}
         with open(self.__file_path, 'w') as file:
@@ -33,9 +34,13 @@ class FileStorage:
             pass
     """    
     def save(self):
-        with open(self.__file_path, "w") as f:
+        with open(self.__file_path, "a") as f:
             if len(self. __objects) != 0:
-                str_to_json = json.dumps(self.__objects)
+                for key, value in self.__objects.items():
+                    print("key:{}  value: {}".format(key, self.__objects[key]))
+                    print("+++++++")
+                serial_obj = {k: v.to_dict() for k, v in self.__objects.items()}
+                str_to_json = json.dumps(serial_obj)
                 f.write(str_to_json)
 
     def reload(self):
@@ -45,8 +50,10 @@ class FileStorage:
         except FileNotFoundError:
             return
 
-        return json.loads(str_json)
-
-
-
-    """
+        if len(str_json) != 0:
+            data = json.loads(str_json)
+            for k, v in data.items():
+                class_name, obj_id = k.split('.')
+                print("classe name {}".format(class_name))
+                class_ref = globals().get(class_name)
+                self.__objects[k] = class_ref(**v)
