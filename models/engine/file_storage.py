@@ -1,52 +1,45 @@
 #!/usr/bin/python3
-""" module file_storage"""
+""" module file_storage that defines class: FileStorage"""
 import json
-import models
+from models.base_model import BaseModel
+
 
 class FileStorage:
-    """
+    """serializes instances to a JSON file
+    and deserializes JSON file to instances:
+    Attributes:
+    __file_path (str): path to the JSON file (file.json)
+    __objects (dict): will store all objects by <class name>.id
     """
     __file_path = "file.json"
     __objects = {}
 
     def all(self):
+        """returns the dictionary __objects"""
         return self.__objects
 
     def new(self, obj):
+        """sets in __objects the obj with key <obj class name>.id"""
         key = "{}.{}".format(obj.__class__.__name__, obj.id)
         self.__objects[key] = obj
-    """    
+
     def save(self):
-        serialized_objects = {key: obj.to_dict() for key, obj in self.__objects.items()}
-        with open(self.__file_path, 'w') as file:
-            json.dump(serialized_objects, file)
-    
-    def reload(self):
-        try:
-            with open(self.__file_path, 'r') as file:
-                data = json.load(file)
-                from models.base_model import BaseModel
-                for key, value in data.items():
-                    class_name, obj_id = key.split('.')
-                    class_ = globals()[class_name]
-                    self.__objects[key] = class_(**value)
-        except FileNotFoundError:
-            pass
-    """    
-    def save(self):
-        with open(self.__file_path, "a") as f:
-            if len(self. __objects) != 0:
-                for key, value in self.__objects.items():
-                    print("key:{}  value: {}".format(key, self.__objects[key]))
-                    print("+++++++")
-                serial_obj = {k: v.to_dict() for k, v in self.__objects.items()}
+        """serializes __objects to the JSON file (path: __file_path)"""
+
+        if len(self. __objects) != 0:
+            serial_obj = {k: v.to_dict() for k, v in self.__objects.items()}
+            with open(self.__file_path, "w") as f:
                 str_to_json = json.dumps(serial_obj)
                 f.write(str_to_json)
 
     def reload(self):
+        """deserializes the JSON file to __objects if (__file_path) exists;
+        otherwise, do nothing.
+        """
         try:
             with open(self.__file_path, "r") as f:
                 str_json = f.read()
+
         except FileNotFoundError:
             return
 
@@ -54,6 +47,5 @@ class FileStorage:
             data = json.loads(str_json)
             for k, v in data.items():
                 class_name, obj_id = k.split('.')
-                print("classe name {}".format(class_name))
                 class_ref = globals().get(class_name)
                 self.__objects[k] = class_ref(**v)
