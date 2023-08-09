@@ -104,36 +104,42 @@ class HBNBCommand(cmd.Cmd):
         else:
             print("** class doesn't exist **")
 
-    # def do_update(self, arg):
-    #     """Updates an instance based on the class name and id"""
-    #
-    #     args = arg.split()
-    #     if not args:
-    #         print("** class name missing **")
-    #     else:
-    #         try:
-    #             cls_name = args[0]
-    #             if len(args) < 2:
-    #                 print("** instance id missing **")
-    #                 return
-    #             instance_id = args[1]
-    #             key = "{}.{}".format(cls_name, instance_id)
-    #             all_objects = models.storage.all()
-    #             if len(args) < 3:
-    #                 print("** attribute name missing **")
-    #                 return
-    #             instance_name = args[2]
-    #             key = "{}.{}".format(cls_name, instance_name)
-    #             if len(args) < 4:
-    #                 print("** value missing **")
-    #                 return
-    #             instance_value = args[3]
-    #             key = "{}.{}".format(cls_name, instance_value)
-    #                 models.storage.save()
-    #             else:
-    #                 print("** no instance found **")
-    #         except KeyError:
-    #             print("** class doesn't exist **")
+    def do_update(self, arg):
+        """Updates an instance based on the class name and id"""
+        args = arg.split()
+        if not args:
+            print("** class name missing **")
+        else:
+           cls_name = args[0]
+           if cls_name != "BaseModel":
+               print("** class doesn't exist **")
+               return
+
+           if len(args) < 2:
+               print("** instance id missing **")
+               return
+           instance_id = args[1]
+           key = "{}.{}".format(cls_name, instance_id)
+           all_objects = models.storage.all()
+           if not key in all_objects.keys():
+               print("** no instance found **")
+               return
+
+           if len(args) < 3:
+               print("** attribute name missing **")
+               return
+           attribute_name = args[2]
+           if len(args) < 4:
+               print("** value missing **")
+               return
+           attribute_value = args[3]
+
+           if key in all_objects.keys():
+               dict_attr = all_objects[key].__dict__.copy()
+               dict_attr[args[2]] = args[3]
+               all_objects[key].save()
+
+
 
 
 
