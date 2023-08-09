@@ -39,7 +39,6 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
         else:
-            # try:
             cls_name = args[0]
             if cls_name != "BaseModel":
                 print("** class doesn't exist **")
@@ -54,9 +53,6 @@ class HBNBCommand(cmd.Cmd):
                 print(all_objects[key])
             else:
                 print("** no instance found **")
-            # except KeyError:
-            #     print("** class doesn't exist **")
-
 
     def do_destroy(self, arg):
         """Deletes an instance based on the class name and id"""
@@ -64,7 +60,6 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
         else:
-            # try:
             cls_name = args[0]
             if cls_name != "BaseModel":
                 print("** class doesn't exist **")
@@ -81,9 +76,6 @@ class HBNBCommand(cmd.Cmd):
                 models.storage.save()
             else:
                 print("** no instance found **")
-            # except KeyError:
-            #     print("** class doesn't exist **")
-
 
     def do_all(self, arg):
         """Prints all string representation of all instances based or not
@@ -110,88 +102,59 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
         else:
-           cls_name = args[0]
-           if cls_name != "BaseModel":
-               print("** class doesn't exist **")
-               return
+            cls_name = args[0]
+            if cls_name != "BaseModel":
+                print("** class doesn't exist **")
+                return
 
-           if len(args) < 2:
-               print("** instance id missing **")
-               return
-           instance_id = args[1]
-           key = "{}.{}".format(cls_name, instance_id)
-           all_objects = models.storage.all()
-           if not key in all_objects.keys():
-               print("** no instance found **")
-               return
+            if len(args) < 2:
+                print("** instance id missing **")
+                return
+            instance_id = args[1]
+            key = "{}.{}".format(cls_name, instance_id)
+            all_objects = models.storage.all()
+            if not key in all_objects.keys():
+                print("** no instance found **")
+                return
 
-           if len(args) < 3:
-               print("** attribute name missing **")
-               return
-           attribute_name = args[2]
-           if len(args) < 4:
-               print("** value missing **")
-               return
-           attribute_value = args[3]
-
-           if key in all_objects.keys():
-               dict_attr = all_objects[key].__dict__.copy()
-               dict_attr[args[2]] = args[3]
-               all_objects[key].save()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
-
-    # def do_update(self, arg):
-    #     """Updates an instance based on the class name and id"""
-    #     args = arg.split()
-    #     if not args:
-    #         print("** class name missing **")
-    #     else:
-    #         try:
-    #             cls_name = args[0]
-    #             if len(args) < 2:
-    #                 print("** instance id missing **")
-    #                 return
-    #             instance_id = args[1]
-    #             key = "{}.{}".format(cls_name, instance_id)
-    #             all_objects = models.storage.all()
-    #             if key in all_objects:
-    #                 if len(args) < 3:
-    #                     print("** attribute name missing **")
-    #                 elif len(args) < 4:
-    #                     print("** value missing **")
-    #                 else:
-    #                     attr_name = args[2]
-    #                     attr_value = args[3]
-    #                     obj = all_objects[key]
-    #                     if hasattr(obj, attr_name):
-    #                         attr_type = type(getattr(obj, attr_name))
-    #                         setattr(obj, attr_name, attr_type(attr_value))
-    #                         models.storage.save()
-    #                     else:
-    #                         print("** attribute doesn't exist **")
-    #             else:
-    #                 print("** no instance found **")
-    #         except KeyError:
-    #             print("** class doesn't exist **")
-
+            if len(args) < 3:
+                print("** attribute name missing **")
+                return
+            attribute_name = args[2]
+            if len(args) < 4:
+                print("** value missing **")
+                return
+           # attribute_value = args[3]
+           #
+           # if key in all_objects.keys():
+           #     dict_attr = all_objects[key].__dict__.copy()
+           #     dict_attr[args[2]] = args[3]
+           #     all_objects[key].save()
+###############
+#
+# 3an abi horayra radya laho 3anha
+# had l code rah khdam mais manta3n
+# t inspiray mno bash tl9ay solution 
+# l code nta3dk
+#            
+###############
+            if len(args) == 4:
+                obj = all_objects["{}.{}".format(args[0], args[1])]
+                if args[2] in obj.__class__.__dict__.keys():
+                    valtype = type(obj.__class__.__dict__[args[2]])
+                    obj.__dict__[args[2]] = valtype(args[3])
+                else:
+                    obj.__dict__[args[2]] = args[3]
+            elif type(eval(args[2])) == dict:
+                obj = all_objects["{}.{}".format(args[0], args[1])]
+                for k, v in eval(args[2]).items():
+                    if (k in obj.__class__.__dict__.keys() and
+                            type(obj.__class__.__dict__[k]) in {str, int, float}):
+                        valtype = type(obj.__class__.__dict__[k])
+                        obj.__dict__[k] = valtype(v)
+                    else:
+                        obj.__dict__[k] = v
+                storage.save()
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
