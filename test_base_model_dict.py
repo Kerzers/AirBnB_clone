@@ -17,6 +17,10 @@ for key in my_model_json.keys():
 print("--")
 my_new_model = BaseModel(**my_model_json)
 print(my_new_model.id)
+if (hasattr(my_new_model, "__class__")):
+    print(my_new_model.__class__)
+    print("+++++++++++++++++++")
+
 print(my_new_model)
 print(type(my_new_model.created_at))
 
