@@ -2,10 +2,26 @@
 import cmd
 import models
 from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.city import City
+from models.place import Place
+from models.amenity import Amenity
+from models.review import Review
+
 
 class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
-
+    
+    class_list = {
+        "BaseModel",
+        "User",
+        "Place",
+        "State",
+        "City",
+        "Amenity",
+        "Review"
+    }
     def do_quit(self, arg):
         """Quit command to exit the program"""
         return True
@@ -40,7 +56,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         else:
             cls_name = args[0]
-            if cls_name != "BaseModel":
+            if cls_name not in self.class_list:
                 print("** class doesn't exist **")
                 return
             if len(args) < 2:
@@ -61,7 +77,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         else:
             cls_name = args[0]
-            if cls_name != "BaseModel":
+            if cls_name not in self.class_list:
                 print("** class doesn't exist **")
                 return
 
@@ -81,7 +97,7 @@ class HBNBCommand(cmd.Cmd):
         """Prints all string representation of all instances based or not
         on the class name. """
         args = arg.split()
-        if not args or args[0] == "BaseModel":
+        if not args or args[0] in self.class_list:
             if not args:
                 cls_name = "BaseModel"
             else:
@@ -103,7 +119,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         else:
             cls_name = args[0]
-            if cls_name != "BaseModel":
+            if cls_name not in self.class_list:
                 print("** class doesn't exist **")
                 return
 
@@ -124,20 +140,6 @@ class HBNBCommand(cmd.Cmd):
             if len(args) < 4:
                 print("** value missing **")
                 return
-           # attribute_value = args[3]
-           #
-           # if key in all_objects.keys():
-           #     dict_attr = all_objects[key].__dict__.copy()
-           #     dict_attr[args[2]] = args[3]
-           #     all_objects[key].save()
-###############
-#
-# 3an abi horayra radya laho 3anha
-# had l code rah khdam mais manta3n
-# t inspiray mno bash tl9ay solution 
-# l code nta3dk
-#            
-###############
             if len(args) == 4:
                 obj = all_objects["{}.{}".format(args[0], args[1])]
                 if args[2] in obj.__class__.__dict__.keys():
