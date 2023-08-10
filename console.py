@@ -10,9 +10,33 @@ from models.amenity import Amenity
 from models.review import Review
 
 
+def extract_strings(lst):
+    result = []
+    quoted_section = 0
+    current_string = ""
+
+    for item in lst:
+        if item.startswith('"') and item.endswith('"'):
+            current_string = item[1:-1]   # Remove the opening & closing quote
+            result.append(current_string)
+        if item.startswith('"'):
+            quoted_section = 1
+            current_string = item[1:]  # Remove the opening quote
+        elif item.endswith('"') and quoted_section:
+            quoted_section = 0
+            current_string += " " + item[:-1]  # Remove the closing quote
+            result.append(current_string)
+            current_string = ""
+        elif quoted_section:
+            current_string += " " + item
+        else:
+            pass
+    return result
+
+
 class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
-    
+
     class_list = {
         "BaseModel",
         "User",
@@ -22,6 +46,7 @@ class HBNBCommand(cmd.Cmd):
         "Amenity",
         "Review"
     }
+
     def do_quit(self, arg):
         """Quit command to exit the program"""
         return True
@@ -35,7 +60,6 @@ class HBNBCommand(cmd.Cmd):
         """Do nothing on empty line"""
         pass
 
-
     def do_create(self, arg):
         """Creates a new instance of BaseModel and saves it to the JSON file"""
         if not arg:
@@ -47,7 +71,6 @@ class HBNBCommand(cmd.Cmd):
             print(new_instance.id)
         except NameError:
             print("** class doesn't exist **")
-
 
     def do_show(self, arg):
         """Prints the string representation of an instance"""
@@ -129,7 +152,7 @@ class HBNBCommand(cmd.Cmd):
             instance_id = args[1]
             key = "{}.{}".format(cls_name, instance_id)
             all_objects = models.storage.all()
-            if not key in all_objects.keys():
+            if key not in all_objects.keys():
                 print("** no instance found **")
                 return
 
@@ -140,23 +163,23 @@ class HBNBCommand(cmd.Cmd):
             if len(args) < 4:
                 print("** value missing **")
                 return
-            if len(args) == 4:
-                obj = all_objects["{}.{}".format(args[0], args[1])]
-                if args[2] in obj.__class__.__dict__.keys():
-                    valtype = type(obj.__class__.__dict__[args[2]])
-                    obj.__dict__[args[2]] = valtype(args[3])
+
+            if args[3].startswith('"'):
+                string_list = extract_strings(args)
+                attribute_value = string_list[0]
+            else:
+                attribute_value = args[3]
+            list_type_attr = [str, int, float]
+            if key in all_objects.keys():
+                if hasattr(all_objects[key], args[2]):
+                    type_attr = type(getattr(all_objects[key], args[2]))
+                    if type_attr in list_type_attr:
+                        setattr(all_objects[key], args[2],
+                                type_attr(attribute_value))
                 else:
-                    obj.__dict__[args[2]] = args[3]
-            elif type(eval(args[2])) == dict:
-                obj = all_objects["{}.{}".format(args[0], args[1])]
-                for k, v in eval(args[2]).items():
-                    if (k in obj.__class__.__dict__.keys() and
-                            type(obj.__class__.__dict__[k]) in {str, int, float}):
-                        valtype = type(obj.__class__.__dict__[k])
-                        obj.__dict__[k] = valtype(v)
-                    else:
-                        obj.__dict__[k] = v
-                storage.save()
+                    setattr(all_objects[key], args[2], attribute_value)
+                all_objects[key].save()
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
