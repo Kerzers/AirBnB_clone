@@ -46,6 +46,13 @@ class HBNBCommand(cmd.Cmd):
         "Amenity",
         "Review"
     }
+    cmd_method = {
+            "all",
+            "update"
+            "create",
+            "show",
+            "count"
+            }
 
     def do_quit(self, arg):
         """Quit command to exit the program"""
@@ -59,6 +66,43 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """Do nothing on empty line"""
         pass
+
+    def default(self, arg):
+        """Method called on an input line when the command prefix
+        is not recognized
+        """
+        args = arg.split('.')
+        if len(args) == 2:
+            if args[1] == "all()" or args[1] == "count()":
+                cmd_ = args[1][:-2]
+                if cmd_ in self.cmd_method:
+                    do_cmd = getattr(self, "do_" + cmd_)
+                    return  do_cmd(args[0])
+            else:
+                idx_start = args[1].find("(")
+                idx_end = args[1].find(")")
+                inside = args[1][idx_start + 1: idx_end]
+                cmd_ = args[1][:idx_start]
+                if cmd_ in self.cmd_method:
+                    do_cmd = getattr(self, "do_" + cmd_)
+                    command = args[0] + " " + inside
+                    print(command)
+                    return  do_cmd(command)
+                
+        else:
+            print("***Unknown syntax: {}".format(arg))
+    
+    def do_count(self, arg):
+        """retrieve the number of instances of a given class"""
+        count = 0
+        args = arg.split()
+        if args:
+            cls_name = args[0]
+            all_objects = models.storage.all()
+            for obj in all_objects.values():
+                if cls_name == obj.__class__.__name__:
+                    count += 1
+        print(count)
 
     def do_create(self, arg):
         """Creates a new instance of BaseModel and saves it to the JSON file"""
@@ -117,21 +161,24 @@ class HBNBCommand(cmd.Cmd):
                 print("** no instance found **")
 
     def do_all(self, arg):
-        """Prints all string representation of all instances based or not
+        """Prints a list of all string representation of all instances based or not
         on the class name. """
         args = arg.split()
         if not args or args[0] in self.class_list:
-            if not args:
-                cls_name = "BaseModel"
-            else:
-                cls_name = args[0]
-            key = "{}".format(cls_name)
+            str_list = []
             all_objects = models.storage.all()
-            for key in all_objects:
-                if key in all_objects:
-                    print(all_objects[key])
-                else:
-                    print("** no instance found **")
+            if not args:
+                for obj in all_objects.values():
+                    str_list.append(obj.__str__())
+                print(str_list)
+                return
+            
+            cls_name = args[0]
+            for obj in all_objects.values():
+                if cls_name == obj.__class__.__name__:
+                    str_list.append(obj.__str__())
+            print(str_list)
+            return
         else:
             print("** class doesn't exist **")
 
@@ -180,6 +227,7 @@ class HBNBCommand(cmd.Cmd):
                     setattr(all_objects[key], args[2], attribute_value)
                 all_objects[key].save()
 
+    
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
