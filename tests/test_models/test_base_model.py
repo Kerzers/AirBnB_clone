@@ -32,9 +32,9 @@ class TestBaseModel(unittest.TestCase):
     def test_init_kwargs(self):
         a_dict = {
                 'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337',
-                'created_at': '2017-09-28T21:03:54.052298', 
-                '__class__': 'BaseModel', 
-                'my_number': 89, 
+                'created_at': '2017-09-28T21:03:54.052298',
+                '__class__': 'BaseModel',
+                'my_number': 89,
                 'updated_at': '2017-09-28T21:03:54.052302',
                 'name': 'My_First_Model'
                 }
@@ -44,7 +44,7 @@ class TestBaseModel(unittest.TestCase):
         self.assertDictEqual(a_dict, bm1.to_dict())
         self.assertIsInstance(bm1.created_at, datetime)
         self.assertIsInstance(bm1.updated_at, datetime)
-    
+
     def test_init_kwargs_empty(self):
         self.assertIn(BaseModel(), models.storage.all().values())
 
@@ -67,7 +67,7 @@ class TestBaseModel(unittest.TestCase):
         self.assertIn("__class__", bm.to_dict())
         self.assertIn("name", bm.to_dict())
         self.assertIn("number", bm.to_dict())
-    
+
     def test_to_dict_args(self):
         bm = BaseModel()
         with self.assertRaises(TypeError):
@@ -77,4 +77,3 @@ class TestBaseModel(unittest.TestCase):
         bm1 = BaseModel()
         bm1.save()
         self.assertNotEqual(bm1.created_at, bm1.updated_at)
-    

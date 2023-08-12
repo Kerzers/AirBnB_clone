@@ -48,10 +48,11 @@ class HBNBCommand(cmd.Cmd):
     }
     cmd_method = {
             "all",
-            "update"
+            "update",
             "create",
             "show",
-            "count"
+            "count",
+            "destroy"
             }
 
     def do_quit(self, arg):
@@ -77,21 +78,40 @@ class HBNBCommand(cmd.Cmd):
                 cmd_ = args[1][:-2]
                 if cmd_ in self.cmd_method:
                     do_cmd = getattr(self, "do_" + cmd_)
-                    return  do_cmd(args[0])
+                    return do_cmd(args[0])
             else:
                 idx_start = args[1].find("(")
                 idx_end = args[1].find(")")
                 inside = args[1][idx_start + 1: idx_end]
-                cmd_ = args[1][:idx_start]
-                if cmd_ in self.cmd_method:
-                    do_cmd = getattr(self, "do_" + cmd_)
-                    command = args[0] + " " + inside
-                    print(command)
-                    return  do_cmd(command)
-                
+
+                insides = inside.split(',')
+                # insides2 = inside.split(',', 1)
+                # cont_dict = any(isinstance(item, dict) for item in insides2)
+                if len(inside) == 1:
+                    cmd_ = args[1][:idx_start]
+                    if cmd_ in self.cmd_method:
+                        do_cmd = getattr(self, "do_" + cmd_)
+                        command = args[0] + " " + inside
+                        return do_cmd(command)
+
+                if len(insides) == 3:
+                    cmd_ = args[1][:idx_start]
+                    if cmd_ in self.cmd_method:
+                        do_cmd = getattr(self, "do_" + cmd_)
+                        command = "{} {} {} {}".format(args[0], insides[0],
+                                                       insides[1], insides[2])
+                        return do_cmd(command)
+
+                # if cont_dict == True:
+                #         cmd_ = args[1][:idx_start]
+                #         if cmd_ in self.cmd_method:
+                #             do_cmd = getattr(self, "do_" + cmd_)
+                #             command = args[0] + " " + inside
+                #             return do_cmd(command)
+
         else:
             print("***Unknown syntax: {}".format(arg))
-    
+
     def do_count(self, arg):
         """retrieve the number of instances of a given class"""
         count = 0
@@ -161,8 +181,8 @@ class HBNBCommand(cmd.Cmd):
                 print("** no instance found **")
 
     def do_all(self, arg):
-        """Prints a list of all string representation of all instances based or not
-        on the class name. """
+        """Prints a list of all string representation of all instances
+        based or not on the class name. """
         args = arg.split()
         if not args or args[0] in self.class_list:
             str_list = []
@@ -170,15 +190,24 @@ class HBNBCommand(cmd.Cmd):
             if not args:
                 for obj in all_objects.values():
                     str_list.append(obj.__str__())
-                print(str_list)
-                return
-            
+                if len(str_list) > 0:
+                    print(str_list)
+                    return
+                else:
+                    return
+
             cls_name = args[0]
             for obj in all_objects.values():
                 if cls_name == obj.__class__.__name__:
                     str_list.append(obj.__str__())
-            print(str_list)
-            return
+                if len(str_list) > 0:
+                    print(str_list)
+                    return
+                else:
+                    return
+
+            # print(str_list)
+            # return
         else:
             print("** class doesn't exist **")
 
@@ -227,7 +256,6 @@ class HBNBCommand(cmd.Cmd):
                     setattr(all_objects[key], args[2], attribute_value)
                 all_objects[key].save()
 
-    
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
