@@ -98,7 +98,7 @@ class HBNBCommand(cmd.Cmd):
                     cmd_ = args[1][:idx_start]
                     if cmd_ in self.cmd_method:
                         do_cmd = getattr(self, "do_" + cmd_)
-                        command = args[0] + " " + inside
+                        command = args[0] + " " + insides
                         return do_cmd(command)
                 if len(insides) == 2:
                     cmd_ = args[1][:idx_start]
