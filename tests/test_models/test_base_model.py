@@ -30,6 +30,7 @@ class TestBaseModel(unittest.TestCase):
         self.assertIsInstance(b1.updated_at, datetime)
 
     def test_init_kwargs(self):
+        "test_init_kwargs tests kwargs if working correctrly"
         a_dict = {
                 'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337',
                 'created_at': '2017-09-28T21:03:54.052298',
@@ -46,9 +47,11 @@ class TestBaseModel(unittest.TestCase):
         self.assertIsInstance(bm1.updated_at, datetime)
 
     def test_init_kwargs_empty(self):
+        "test_init_kwargs_ tests kwargs if working correctrly if empty"
         self.assertIn(BaseModel(), models.storage.all().values())
 
     def test_to_dict_type(self):
+        "test_to_dict_type tests if working correctrly"
         bm1 = BaseModel()
         json_bm1 = bm1.to_dict()
 
@@ -57,10 +60,12 @@ class TestBaseModel(unittest.TestCase):
             self.assertIsInstance(json_bm1[k], str)
 
     def test_to_dict_difference(self):
+        "test_to_dict_difference tests if working correctrly"
         bm = BaseModel()
         self.assertNotEqual(bm.__dict__, bm.to_dict())
 
     def test_to_dict_attributes(self):
+        "test_to_dict_attributes tests if working correctrly"
         bm = BaseModel()
         bm.name = "model"
         bm.number = 89
@@ -69,11 +74,13 @@ class TestBaseModel(unittest.TestCase):
         self.assertIn("number", bm.to_dict())
 
     def test_to_dict_args(self):
+        "test_to_dict_args tests if working correctrly"
         bm = BaseModel()
         with self.assertRaises(TypeError):
             bm.to_dict(None)
 
     def test_save(self):
+        "test_save tests if working correctrly"
         bm1 = BaseModel()
         bm1.save()
         self.assertNotEqual(bm1.created_at, bm1.updated_at)
