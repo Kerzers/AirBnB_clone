@@ -37,7 +37,7 @@ def extract_strings(lst):
 
 
 class HBNBCommand(cmd.Cmd):
-     """Defines the HolbertonBnB command interpreter."""
+    """Defines the HolbertonBnB command interpreter."""
 
     prompt = "(hbnb) "
 
