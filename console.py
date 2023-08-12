@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import ast
 import cmd
 import models
 from models.base_model import BaseModel
@@ -84,14 +85,22 @@ class HBNBCommand(cmd.Cmd):
                 idx_end = args[1].find(")")
                 inside = args[1][idx_start + 1: idx_end]
 
-                insides = inside.split(',')
-                # insides2 = inside.split(',', 1)
-                # cont_dict = any(isinstance(item, dict) for item in insides2)
-                if len(inside) == 1:
+                if inside.find('{'):
+                    insides = inside.split(',', 1)
+                else:
+                    insides = inside.split(',')
+                if len(insides) == 1:
                     cmd_ = args[1][:idx_start]
                     if cmd_ in self.cmd_method:
                         do_cmd = getattr(self, "do_" + cmd_)
                         command = args[0] + " " + inside
+                        return do_cmd(command)
+                if len(insides) == 2:
+                    cmd_ = args[1][:idx_start]
+                    if cmd_ in self.cmd_method:
+                        do_cmd = getattr(self, "do_" + cmd_)
+                        command = "{} {}{}".format(args[0], insides[0],
+                                                   insides[1])
                         return do_cmd(command)
 
                 if len(insides) == 3:
@@ -206,14 +215,18 @@ class HBNBCommand(cmd.Cmd):
                 else:
                     return
 
-            # print(str_list)
-            # return
         else:
             print("** class doesn't exist **")
 
     def do_update(self, arg):
         """Updates an instance based on the class name and id"""
-        args = arg.split()
+        is_dict = 0
+        if arg.find('{') and arg.find('}'):
+            args = arg.split(' ', 2)
+            dict_ = ast.literal_eval(args[2])
+            is_dict = 1
+        else:
+            args = arg.split()
         if not args:
             print("** class name missing **")
         else:
@@ -235,7 +248,21 @@ class HBNBCommand(cmd.Cmd):
             if len(args) < 3:
                 print("** attribute name missing **")
                 return
-            attribute_name = args[2]
+            list_type_attr = [str, int, float]
+            if is_dict:
+                obj = all_objects[key]
+                for k, v in dict_.items():  # args[2] is a dict
+                    if hasattr(obj, k):
+                        type_attr = type(getattr(obj, k))
+                        if type_attr in list_type_attr:
+                            setattr(obj, k, type_attr(v))
+                            obj.save()
+                    else:
+                        setattr(obj, k, v)
+                        obj.save()
+                return
+            else:
+                attribute_name = args[2]
             if len(args) < 4:
                 print("** value missing **")
                 return
