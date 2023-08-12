@@ -8,4 +8,5 @@ class TestFileStorage(unittest.TestCase):
     """Tests class: FileStorage"""
 
     def test_init(self):
+    "test_init if it works"
         pass
