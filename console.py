@@ -12,6 +12,7 @@ from models.review import Review
 
 
 def extract_strings(lst):
+    """Extract_string Extract a string with coutes within this last"""
     result = []
     quoted_section = 0
     current_string = ""
@@ -36,6 +37,8 @@ def extract_strings(lst):
 
 
 class HBNBCommand(cmd.Cmd):
+     """Defines the HolbertonBnB command interpreter."""
+
     prompt = "(hbnb) "
 
     class_list = {
