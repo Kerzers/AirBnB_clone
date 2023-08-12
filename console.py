@@ -98,7 +98,7 @@ class HBNBCommand(cmd.Cmd):
                     cmd_ = args[1][:idx_start]
                     if cmd_ in self.cmd_method:
                         do_cmd = getattr(self, "do_" + cmd_)
-                        command = args[0] + " " + insides
+                        command = args[0] + " " + inside
                         return do_cmd(command)
                 if len(insides) == 2:
                     cmd_ = args[1][:idx_start]
@@ -226,7 +226,7 @@ class HBNBCommand(cmd.Cmd):
     def do_update(self, arg):
         """Updates an instance based on the class name and id"""
         is_dict = 0
-        if arg.find('{') and arg.find('}'):
+        if '{' in arg and '}' in arg:
             args = arg.split(' ', 2)
             dict_ = ast.literal_eval(args[2])
             is_dict = 1
@@ -254,7 +254,7 @@ class HBNBCommand(cmd.Cmd):
                 print("** attribute name missing **")
                 return
             list_type_attr = [str, int, float]
-            if is_dict:
+            if is_dict == 1:
                 obj = all_objects[key]
                 for k, v in dict_.items():  # args[2] is a dict
                     if hasattr(obj, k):
