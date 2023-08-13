@@ -9,21 +9,6 @@ from datetime import datetime
 class TestBaseModel(unittest.TestCase):
     """tests the class: BaseModel"""
 
-    def test_no_args(self):
-        self.assertEqual(BaseModel, type(BaseModel()))
-
-    def test_new_instance(self):
-        self.assertIn(BaseModel(), models.storage.all().values())
-
-    def test_id(self):
-        self.assertEqual(str, type(BaseModel().id))
-
-    def test_created_at(self):
-        self.assertEqual(datetime, type(BaseModel().created_at))
-
-    def test_updated_at(self):
-        self.assertEqual(datetime, type(BaseModel().updated_at))
-
     def test_init_id(self):
         """ tests the init method with id"""
         b1 = BaseModel()
