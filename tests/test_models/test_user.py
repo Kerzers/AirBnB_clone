@@ -13,7 +13,7 @@ class TestUser(unittest.TestCase):
 
     def test_init(self):
         self.assertIsInstance(User(), BaseModel)
-    
+
     def test_init_id(self):
         """ tests the init method with id"""
         u1 = User()
@@ -58,7 +58,7 @@ class TestUser(unittest.TestCase):
     def test_init_kwargs_empty(self):
         "test_init_kwargs_ tests kwargs if working correctrly if empty"
         self.assertIn(User(), models.storage.all().values())
-    
+
     def test_to_dict(self):
         "test_to_dict_type tests if working correctrly"
         u = User()
@@ -91,4 +91,3 @@ class TestUser(unittest.TestCase):
         u = User()
         u.save()
         self.assertNotEqual(u.created_at, u.updated_at)
-
