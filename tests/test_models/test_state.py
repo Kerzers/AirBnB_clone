@@ -84,3 +84,5 @@ class TestState(unittest.TestCase):
         s = State()
         s.save()
         self.assertNotEqual(s.created_at, s.updated_at)
+if __name__ == "__main__":
+    unittest.main()

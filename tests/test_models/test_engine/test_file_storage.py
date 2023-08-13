@@ -23,3 +23,5 @@ class TestFileStorage(unittest.TestCase):
         self.assertEqual(dict, type(FileStorage._FileStorage__objects))
         with self.assertRaises(TypeError):
             FileStorage(None)
+if __name__ == "__main__":
+    unittest.main()

@@ -86,3 +86,5 @@ class TestAmenity(unittest.TestCase):
         self.assertNotEqual(s.created_at, s.updated_at)
         with self.assertRaises(TypeError):
             s.save(None)
+if __name__ == "__main__":
+    unittest.main()

@@ -100,3 +100,5 @@ class TestPlace(unittest.TestCase):
         self.assertNotEqual(u.created_at, u.updated_at)
         with self.assertRaises(TypeError):
             u.save(None)
+if __name__ == "__main__":
+    unittest.main()
