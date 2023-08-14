@@ -7,7 +7,8 @@ import models
 
 
 class BaseModel:
-    """This is the class BaseModel"""
+    """This is the class BaseModel
+    """
 
     def __init__(self, *args, **kwargs):
         """Initiliaze an instance:
