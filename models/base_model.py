@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-"""this module defines the class: BaseModel"""
+"""this module defines the class: BaseModel
+"""
 from uuid import uuid4
 from datetime import datetime
 import models
@@ -35,13 +36,15 @@ class BaseModel:
             models.storage.new(self)
 
     def __str__(self):
-        """It prints: [<class name>] (<self.id>) <self.__dict__>"""
+        """It prints: [<class name>] (<self.id>) <self.__dict__>
+        """
         classe_name = type(self).__name__
         return "[{}] ({}) {}".format(classe_name, self.id, self.__dict__)
 
     def save(self):
         """Updates the public instance attribute updated_at
-        with the current datetime"""
+        with the current datetime
+        """
 
         self.updated_at = datetime.now()
         models.storage.save()
