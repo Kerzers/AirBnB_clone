@@ -34,11 +34,10 @@ class FileStorage:
     def save(self):
         """serializes __objects to the JSON file (path: __file_path)"""
 
-        if len(self. __objects) != 0:
-            serial_obj = {k: v.to_dict() for k, v in self.__objects.items()}
-            with open(self.__file_path, "w") as f:
-                str_to_json = json.dumps(serial_obj)
-                f.write(str_to_json)
+        serial_obj = {k: v.to_dict() for k, v in self.__objects.items()}
+        with open(self.__file_path, "w") as f:
+            str_to_json = json.dumps(serial_obj)
+            f.write(str_to_json)
 
     def reload(self):
         """deserializes the JSON file to __objects if (__file_path) exists;
